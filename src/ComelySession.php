@@ -23,8 +23,6 @@ use Comely\Sessions\Exception\ComelySessionException;
  */
 class ComelySession implements \Serializable
 {
-    private const SESSION_ID_LEN = 32;
-
     /** @var string */
     private $id;
     /** @var Bag */
@@ -57,13 +55,13 @@ class ComelySession implements \Serializable
     public function regenerateSessionId(?string $nonce = null): self
     {
         try {
-            $sessionId = random_bytes(self::SESSION_ID_LEN);
+            $sessionId = random_bytes(32);
         } catch (\Exception $e) {
             throw new ComelySessionException('Failed to generate session Id');
         }
 
         if ($nonce) {
-            $sessionId = substr(hash_hmac("sha512", $sessionId, $nonce, true), 0, self::SESSION_ID_LEN);
+            $sessionId = substr(hash_hmac("sha512", $sessionId, $nonce, true), 0, 32);
         }
 
         $this->id = bin2hex($sessionId);
@@ -140,7 +138,7 @@ class ComelySession implements \Serializable
             $this->timeStamp
             ) = $session;
 
-        if (!is_string($this->id) || !preg_match('/^[a-f0-9]{' . (self::SESSION_ID_LEN * 2) . '}$/i', $this->id)) {
+        if (!is_string($this->id) || !preg_match('/^[a-f0-9]{64}$/', $this->id)) {
             throw new ComelySessionException('Invalid serialized session Id');
         }
     }
