@@ -1,0 +1,27 @@
+{
+  "name": "comely-io/sessions",
+  "description": "Sessions component for Comely apps",
+  "type": "library",
+  "homepage": "https://github.com/comely-io/sessions",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Furqan A. Siddiqui",
+      "email": "hello@furqansiddiqui.com",
+      "homepage": "https://www.furqansiddiqui.com",
+      "role": "Author"
+    }
+  ],
+  "require": {
+    "php": "^7.1",
+    "comely-io/filesystem": "^1.0.10"
+  },
+  "autoload": {
+    "psr-4": {
+      "Comely\\Sessions\\": [
+        "src"
+      ]
+    }
+  },
+  "minimum-stability": "dev"
+}
