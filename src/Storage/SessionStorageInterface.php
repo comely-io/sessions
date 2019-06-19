@@ -28,10 +28,10 @@ interface SessionStorageInterface
 
     /**
      * @param string $id
-     * @param $payload
+     * @param string $serializedSession
      * @return bool
      */
-    public function write(string $id, $payload): bool;
+    public function write(string $id, string $serializedSession): bool;
 
     /**
      * @param string $id
