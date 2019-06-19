@@ -93,7 +93,7 @@ class Bag implements \Serializable
      */
     public function serialize(): string
     {
-        return serialize(["bags" => $this->bags, "props" => $this->props]);
+        return serialize([$this->bags, $this->props]);
     }
 
     /**
@@ -108,19 +108,10 @@ class Bag implements \Serializable
             ]
         ]);
 
-        if (!is_array($bag) || !isset($bag["bags"]) || !isset($bag["props"])) {
-            throw new ComelySessionException('Serialized session bag is invalid');
+        if (!is_array($bag)) {
+            throw new ComelySessionException('Bad/incomplete serialized session bag');
         }
 
-        if (!is_array($bag["bags"])) {
-            throw new ComelySessionException('Serialized session bag.bags is invalid');
-        }
-
-        if (!is_array($bag["props"])) {
-            throw new ComelySessionException('Serialized session bag.props is invalid');
-        }
-
-        $this->bags = $bag["bags"];
-        $this->props = $bag["props"];
+        list($this->bags, $this->props) = $bag;
     }
 }
