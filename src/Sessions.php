@@ -53,6 +53,10 @@ class Sessions
             throw new ComelySessionException('Invalid session id');
         }
 
+        if (isset($this->sessions[$id])) {
+            return $this->sessions[$id]; // If session is already loaded, return same instance instead of reading allover
+        }
+
         if (!$this->storage->has($id)) {
             throw new ComelySessionException(sprintf('Session "%s" does not exist', $id));
         }
