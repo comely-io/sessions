@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Comely\Sessions;
 
 use Comely\Sessions\ComelySession\Bag;
+use Comely\Sessions\ComelySession\FlashBag;
 use Comely\Sessions\Exception\ComelySessionException;
 
 /**
@@ -29,7 +30,7 @@ class ComelySession implements \Serializable
     private $baggage;
     /** @var Bag */
     private $meta;
-    /** @var Bag */
+    /** @var FlashBag */
     private $flash;
     /** @var int */
     private $timeStamp;
@@ -43,7 +44,7 @@ class ComelySession implements \Serializable
         $this->regenerateSessionId();
         $this->baggage = new Bag();
         $this->meta = new Bag();
-        $this->flash = new Bag();
+        $this->flash = new FlashBag();
         $this->timeStamp = time();
     }
 
@@ -93,9 +94,9 @@ class ComelySession implements \Serializable
     }
 
     /**
-     * @return Bag
+     * @return FlashBag
      */
-    public function flash(): Bag
+    public function flash(): FlashBag
     {
         return $this->flash;
     }
@@ -122,7 +123,8 @@ class ComelySession implements \Serializable
     {
         $session = @unserialize($serialized, [
             "allowed_classes" => [
-                'Comely\Sessions\ComelySession\Bag'
+                'Comely\Sessions\ComelySession\Bag',
+                'Comely\Sessions\ComelySession\FlashBag',
             ]
         ]);
 
