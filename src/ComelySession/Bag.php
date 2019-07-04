@@ -23,9 +23,9 @@ use Comely\Sessions\Exception\ComelySessionException;
 class Bag implements \Serializable
 {
     /** @var array */
-    private $props;
+    protected $props;
     /** @var array */
-    private $bags;
+    protected $bags;
 
     /**
      * Bag constructor.
