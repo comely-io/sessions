@@ -22,7 +22,7 @@ class FlashBag implements \Serializable
 {
     /** @var Bag */
     private $current;
-    /** @var null|Bag */
+    /** @var Bag */
     private $loaded;
 
     /**
@@ -31,7 +31,7 @@ class FlashBag implements \Serializable
     public function __construct()
     {
         $this->current = new Bag();
-        $this->loaded = null;
+        $this->loaded = new Bag();
     }
 
     /**
@@ -43,9 +43,9 @@ class FlashBag implements \Serializable
     }
 
     /**
-     * @return Bag|null
+     * @return Bag
      */
-    public function last(): ?Bag
+    public function last(): Bag
     {
         return $this->loaded;
     }
