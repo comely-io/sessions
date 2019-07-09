@@ -91,7 +91,9 @@ class Sessions
      */
     public function start(): ComelySession
     {
-        return new ComelySession();
+        $session = new ComelySession();
+        $this->sessions[$session->id()] = $session;
+        return $session;
     }
 
     /**
