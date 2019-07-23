@@ -89,6 +89,17 @@ class Bag implements \Serializable
     }
 
     /**
+     * @param string $prop
+     * @return Bag
+     */
+    public function delete(string $prop): self
+    {
+        $key = strtolower($prop);
+        unset($this->props[$key], $this->bags[$key]);
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function serialize(): string
