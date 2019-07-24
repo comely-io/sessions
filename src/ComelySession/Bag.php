@@ -47,12 +47,18 @@ class Bag implements \Serializable
     }
 
     /**
-     * @param string $prop
+     * @param string ...$props
      * @return bool
      */
-    public function has(string $prop): bool
+    public function has(string ...$props): bool
     {
-        return array_key_exists(strtolower($prop), $this->props);
+        foreach ($props as $prop) {
+            if (!array_key_exists(strtolower($prop), $this->props)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
