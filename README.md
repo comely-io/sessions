@@ -4,7 +4,7 @@ Sessions component for Comely apps
 
 ## Requirements
 
-* PHP >= 7.1
+* PHP ^8.0
 
 ## Installation
 
