@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/sessions" package.
  * https://github.com/comely-io/sessions
  *
@@ -18,12 +18,12 @@ namespace Comely\Sessions\ComelySession;
  * Class FlashBag
  * @package Comely\Sessions\ComelySession
  */
-class FlashBag implements \Serializable
+class FlashBag
 {
     /** @var Bag */
-    private $current;
+    private Bag $current;
     /** @var Bag */
-    private $loaded;
+    private Bag $loaded;
 
     /**
      * FlashBag constructor.
@@ -51,29 +51,19 @@ class FlashBag implements \Serializable
     }
 
     /**
-     * @return string
+     * @return Bag[]
      */
-    public function serialize(): string
+    public function __serialize(): array
     {
-        return serialize($this->current);
+        return ["current" => $this->current];
     }
 
     /**
-     * @param string $serialized
+     * @param array $data
      */
-    public function unserialize($serialized)
+    public function __unserialize(array $data): void
     {
-        $unserialize = unserialize($serialized, [
-            "allowed_classes" => [
-                'Comely\Sessions\ComelySession\Bag'
-            ]
-        ]);
-
-        if (!$unserialize instanceof Bag) {
-            throw new \UnexpectedValueException('Failed to unserialize flash bags');
-        }
-
-        $this->loaded = $unserialize;
+        $this->loaded = $data["current"];
         $this->current = new Bag();
     }
 }

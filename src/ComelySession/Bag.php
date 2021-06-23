@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/sessions" package.
  * https://github.com/comely-io/sessions
  *
@@ -14,27 +14,16 @@ declare(strict_types=1);
 
 namespace Comely\Sessions\ComelySession;
 
-use Comely\Sessions\Exception\ComelySessionException;
-
 /**
  * Class Bag
  * @package Comely\Sessions\ComelySession
  */
-class Bag implements \Serializable
+class Bag
 {
     /** @var array */
-    protected $props;
+    protected array $props = [];
     /** @var array */
-    protected $bags;
-
-    /**
-     * Bag constructor.
-     */
-    public function __construct()
-    {
-        $this->props = [];
-        $this->bags = [];
-    }
+    protected array $bags = [];
 
     /**
      * @param string $name
@@ -72,24 +61,20 @@ class Bag implements \Serializable
 
     /**
      * @param string $prop
-     * @param $value
-     * @return Bag
+     * @param string|int|float|bool|null $value
+     * @return $this
      */
-    public function set(string $prop, $value): self
+    public function set(string $prop, string|int|float|bool|null $value): self
     {
-        if (is_scalar($value) || is_null($value)) {
-            $this->props[strtolower($prop)] = $value;
-            return $this;
-        }
-
-        throw new \InvalidArgumentException(sprintf('Cannot store value of type "%s" in ComelySession', gettype($value)));
+        $this->props[strtolower($prop)] = $value;
+        return $this;
     }
 
     /**
      * @param string $prop
-     * @return mixed|null
+     * @return string|int|float|bool|null
      */
-    public function get(string $prop)
+    public function get(string $prop): string|int|float|bool|null
     {
         return $this->props[strtolower($prop)] ?? null;
     }
@@ -106,29 +91,22 @@ class Bag implements \Serializable
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function serialize(): string
+    public function __serialize(): array
     {
-        return serialize([$this->bags, $this->props]);
+        return [
+            "bags" => $this->bags,
+            "props" => $this->props,
+        ];
     }
 
     /**
-     * @param string $serialized
-     * @throws ComelySessionException
+     * @param array $data
      */
-    public function unserialize($serialized)
+    public function __unserialize(array $data): void
     {
-        $bag = @unserialize($serialized, [
-            "allowed_classes" => [
-                'Comely\Sessions\ComelySession\Bag'
-            ]
-        ]);
-
-        if (!is_array($bag)) {
-            throw new ComelySessionException('Bad/incomplete serialized session bag');
-        }
-
-        list($this->bags, $this->props) = $bag;
+        $this->bags = $data["bags"] ?? [];
+        $this->props = $data["props"] ?? [];
     }
 }
