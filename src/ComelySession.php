@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/sessions" package.
  * https://github.com/comely-io/sessions
  *
@@ -25,15 +25,15 @@ use Comely\Sessions\Exception\ComelySessionException;
 class ComelySession implements \Serializable
 {
     /** @var string */
-    private $id;
+    private string $id;
     /** @var Bag */
-    private $baggage;
+    private Bag $baggage;
     /** @var Bag */
-    private $meta;
+    private Bag $meta;
     /** @var FlashBag */
-    private $flash;
+    private FlashBag $flash;
     /** @var int */
-    private $timeStamp;
+    private int $timeStamp;
 
     /**
      * ComelySession constructor.
@@ -50,14 +50,14 @@ class ComelySession implements \Serializable
 
     /**
      * @param string|null $nonce
-     * @return ComelySession
+     * @return $this
      * @throws ComelySessionException
      */
     public function regenerateSessionId(?string $nonce = null): self
     {
         try {
             $sessionId = random_bytes(32);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new ComelySessionException('Failed to generate session Id');
         }
 
@@ -102,6 +102,14 @@ class ComelySession implements \Serializable
     }
 
     /**
+     * @return int
+     */
+    public function timeStamp(): int
+    {
+        return $this->timeStamp;
+    }
+
+    /**
      * @return string
      */
     public function serialize(): string
@@ -116,12 +124,12 @@ class ComelySession implements \Serializable
     }
 
     /**
-     * @param string $serialized
+     * @param string $data
      * @throws ComelySessionException
      */
-    public function unserialize($serialized)
+    public function unserialize($data)
     {
-        $session = @unserialize($serialized, [
+        $session = @unserialize($data, [
             "allowed_classes" => [
                 'Comely\Sessions\ComelySession\Bag',
                 'Comely\Sessions\ComelySession\FlashBag',

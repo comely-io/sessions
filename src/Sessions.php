@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/sessions" package.
  * https://github.com/comely-io/sessions
  *
@@ -24,14 +24,14 @@ use Comely\Sessions\Storage\SessionStorageInterface;
 class Sessions
 {
     /** string Version (Major.Minor.Release-Suffix) */
-    public const VERSION = "1.0.12";
+    public const VERSION = "2.0.0";
     /** int Version (Major * 10000 + Minor * 100 + Release) */
-    public const VERSION_ID = 10012;
+    public const VERSION_ID = 20000;
 
     /** @var SessionStorageInterface */
-    private $storage;
+    private SessionStorageInterface $storage;
     /** @var array */
-    private $sessions;
+    private array $sessions = [];
 
     /**
      * Sessions constructor.
@@ -40,7 +40,6 @@ class Sessions
     public function __construct(SessionStorageInterface $storage)
     {
         $this->storage = $storage;
-        $this->sessions = [];
 
         // Auto-save session(s) at end of execution
         register_shutdown_function([$this, "save"]);
@@ -66,7 +65,7 @@ class Sessions
             throw new ComelySessionException(sprintf('Session "%s" does not exist', $id));
         }
 
-        $sessionData = base64_decode($this->storage->read($id));
+        $sessionData = $this->storage->read($id);
         if (!$sessionData) {
             throw new ComelySessionException(sprintf('Failed to decode session "%s"', $id));
         }
@@ -87,7 +86,6 @@ class Sessions
 
     /**
      * @return ComelySession
-     * @throws ComelySessionException
      */
     public function start(): ComelySession
     {
@@ -122,7 +120,7 @@ class Sessions
         /** @var ComelySession $session */
         foreach ($this->sessions as $session) {
             try {
-                $serialized = base64_encode(serialize($session));
+                $serialized = serialize($session);
                 $this->storage->write($session->id(), $serialized);
             } catch (\Exception $e) {
                 trigger_error(
