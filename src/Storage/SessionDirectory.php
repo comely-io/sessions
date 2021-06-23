@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/sessions" package.
  * https://github.com/comely-io/sessions
  *
@@ -27,7 +27,7 @@ use Comely\Sessions\Exception\StorageException;
 class SessionDirectory implements SessionStorageInterface
 {
     /** @var Directory */
-    private $dir;
+    private Directory $dir;
 
     /**
      * SessionsDirectory constructor.
@@ -36,9 +36,9 @@ class SessionDirectory implements SessionStorageInterface
      */
     public function __construct(Directory $dir)
     {
-        if (!$dir->permissions()->read()) {
+        if (!$dir->permissions()->readable()) {
             throw new StorageException('Sessions directory is not readable');
-        } elseif (!$dir->permissions()->write()) {
+        } elseif (!$dir->permissions()->writable()) {
             throw new StorageException('Sessions directory is not writable');
         }
 
@@ -54,9 +54,9 @@ class SessionDirectory implements SessionStorageInterface
     {
         try {
             return $this->dir->file($id . ".sess", false)->timestamps()->modified();
-        } catch (PathNotExistException $e) {
+        } catch (PathNotExistException) {
             throw new StorageException(sprintf('Session file "%s" does not exist', $id));
-        } catch (FilesystemException $e) {
+        } catch (FilesystemException) {
             throw new StorageException(sprintf('Failed to check session file "%s"', $id));
         }
     }
@@ -70,11 +70,11 @@ class SessionDirectory implements SessionStorageInterface
     {
         try {
             return $this->dir->file($id . ".sess")->read();
-        } catch (PathNotExistException $e) {
+        } catch (PathNotExistException) {
             throw new StorageException(sprintf('Session "%s" not found in directory', $id));
-        } catch (PathPermissionException $e) {
+        } catch (PathPermissionException) {
             throw new StorageException(sprintf('Session file "%s" is not readable', $id));
-        } catch (FilesystemException $e) {
+        } catch (FilesystemException) {
             throw new StorageException(sprintf('Failed to read session file "%s"', $id));
         }
     }
@@ -88,10 +88,10 @@ class SessionDirectory implements SessionStorageInterface
     public function write(string $id, string $serializedSession): bool
     {
         try {
-            return $this->dir->write($id . ".sess", $serializedSession, false, true) ? true : false;
-        } catch (PathPermissionException $e) {
+            return (bool)$this->dir->write($id . ".sess", $serializedSession, false, true);
+        } catch (PathPermissionException) {
             throw new StorageException(sprintf('Session "%s" directory is not writable', $id));
-        } catch (FilesystemException $e) {
+        } catch (FilesystemException) {
             throw new StorageException(sprintf('Failed to write session "%s" file', $id));
         }
     }
@@ -104,7 +104,7 @@ class SessionDirectory implements SessionStorageInterface
     {
         try {
             $this->dir->delete($id . ".sess");
-        } catch (FilesystemException $e) {
+        } catch (FilesystemException) {
             throw new StorageException(sprintf('Failed to delete session file "%s"', $id));
         }
     }
@@ -117,9 +117,9 @@ class SessionDirectory implements SessionStorageInterface
     {
         try {
             return $this->dir->glob("*.sess");
-        } catch (PathPermissionException $e) {
+        } catch (PathPermissionException) {
             throw new StorageException('Cannot retrieve sessions list; Directory is not readable');
-        } catch (FilesystemException $e) {
+        } catch (FilesystemException) {
             throw new StorageException('Failed to retrieve sessions list from directory');
         }
     }
@@ -130,7 +130,7 @@ class SessionDirectory implements SessionStorageInterface
      */
     public function has(string $id): bool
     {
-        return $this->dir->has($id . ".sess") ? true : false;
+        return (bool)$this->dir->has($id . ".sess");
     }
 
     /**
