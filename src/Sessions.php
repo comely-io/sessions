@@ -76,7 +76,7 @@ class Sessions
                 'Comely\Sessions\ComelySession\Bag'
             ]
         ]);
-        if (!$session || !$session instanceof ComelySession) {
+        if (!$session instanceof ComelySession) {
             throw new ComelySessionException(sprintf('Failed to unserialize session "%s"', $id));
         }
 
